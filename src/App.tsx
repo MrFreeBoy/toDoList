@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import './App.css';
 import TodoList from "./TodoList";
+import {v1} from "uuid";
 
 export type TaskType = {
-    id: number
+    id: string
     title: string
     isDone: boolean
 }
@@ -14,9 +15,10 @@ function App() {
     const todoListTitle: string = "What to learn"
 
     const [tasks, setTasks] = useState<Array<TaskType>>([
-        {id: 1, title: "HTML", isDone: true},
-        {id: 2, title: "CSS", isDone: true},
-        {id: 3, title: "REACT", isDone: false},
+        {id: v1(), title: "HTML", isDone: true},
+        {id: v1(), title: "CSS", isDone: true},
+        {id: v1(), title: "REACT", isDone: false},
+        {id: v1(), title: "JS", isDone: false},
     ])
     const [filter, setFilter] = useState<FilterValuesType>("all")
 
@@ -25,10 +27,16 @@ function App() {
         setFilter(filter)
     }
 
+    function addTask(title: string) {
+        let task = {id: v1(), title: title, isDone: false}
+        let newTasks = [task, ...tasks];
+        setTasks(newTasks);
+    }
+
     // const tasks = result[0]
     // const setTasks = result [1]
 
-    const removeTask = (taskID: number) => {
+    const removeTask = (taskID: string) => {
         setTasks(tasks.filter(task => task.id !== taskID)) // асинхронная функция 5-10мс
         console.log(tasks)
     }
@@ -45,7 +53,10 @@ function App() {
             <TodoList title={todoListTitle}
                       tasks={tasksForRender}
                       removeTask={removeTask}
-                      changeFilter={changeFilter}/>
+                      changeFilter={changeFilter}
+                      addTask={addTask}
+            />
+
         </div>
     );
 }
