@@ -20,11 +20,17 @@ function App() {
         {id: v1(), title: "REACT", isDone: false},
         {id: v1(), title: "JS", isDone: false},
     ])
+
     const [filter, setFilter] = useState<FilterValuesType>("all")
 
 
     const changeFilter = (filter: FilterValuesType) => {
         setFilter(filter)
+    }
+
+    const changeTaskStatus = (taskID: string, isDone: boolean)=> {
+        setTasks(tasks.map(t=> t.id === taskID ? {...t, isDone: !t.isDone} :t))
+
     }
 
     function addTask(title: string) {
@@ -33,13 +39,11 @@ function App() {
         setTasks(newTasks);
     }
 
-    // const tasks = result[0]
-    // const setTasks = result [1]
-
     const removeTask = (taskID: string) => {
         setTasks(tasks.filter(task => task.id !== taskID)) // асинхронная функция 5-10мс
         console.log(tasks)
     }
+
     let tasksForRender = tasks
     if (filter === "active") {
         tasksForRender = tasks.filter(t => t.isDone === false)
@@ -55,6 +59,7 @@ function App() {
                       removeTask={removeTask}
                       changeFilter={changeFilter}
                       addTask={addTask}
+                      changeTaskStatus={changeTaskStatus}
             />
 
         </div>

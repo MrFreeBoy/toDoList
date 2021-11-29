@@ -6,3 +6,7 @@
 .App > div {
   margin-right: 50px;
 }
+.error{
+  outline: none;
+  border: 2px solid red;
+}

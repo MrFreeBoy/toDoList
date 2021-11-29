@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {FilterValuesType, TaskType} from "./App";
 
 type PropsType = {
@@ -7,35 +7,64 @@ type PropsType = {
     removeTask: (taskID: string) => void
     changeFilter: (filter: FilterValuesType) => void
     addTask: (title: string) => void
+    changeTaskStatus: (taskID: string, isDone: boolean) => void
+
 }
 
 function TodoList(props: PropsType) {
 
     let [title, setTitle] = useState("");
+    const [error, setError] = useState<boolean>(false)
 
     function addTask(title: string) {
-        props.addTask(title);
-        setTitle("");
+        const trimmedTitle = title.trim()
+        if (trimmedTitle) {
+            props.addTask(trimmedTitle);
+            setTitle("");
+        } else {
+            setError(true)
+        }
+
     }
 
     const tasksJSX = props.tasks.map(task => {   //рендеринг списков с помощью методов map
+        const changeStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(task.id, e.currentTarget.checked)
+        const removeTask = () => props.removeTask(task.id)
         return (
             <li key={task.id}>
-                <input type="checkbox" checked={task.isDone}/>
+                <input type="checkbox"
+                       checked={task.isDone}
+                       onChange={changeStatus}
+                />
                 <span>{task.title}</span>
                 <button onClick={() => props.removeTask(task.id)}>x</button>
             </li>
         ) // Клик по кнопке onClick, если мы нажали - функция выполняется
     })
+
+    const errorClass = error ? "error" : ""
+    const errorMassage = error
+        ? <div style={{color: "red"}}>Ошибка</div>
+        : null
+
+
+    // const getBtnClass = props.filter ==="all" ? "active": ""
     return (
         <div>
             <h3>{props.title}</h3>
             <div>
                 <input
                     value={title}
-                    onChange={(e) => {setTitle(e.currentTarget.value)}}
+                    onChange={(e) => {
+                        setTitle(e.currentTarget.value)
+                    }}
+                    className={errorClass}
                 />
-                <button onClick={() => {addTask(title)}}>+</button>
+                <button onClick={() => {
+                    addTask(title)
+                }}>+
+                </button>
+                {error && errorMassage}
             </div>
             <ul>
                 {tasksJSX}
