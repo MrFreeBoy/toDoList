@@ -2,12 +2,14 @@ import React, {ChangeEvent, useState} from 'react';
 import {FilterValuesType, TaskType} from "./App";
 
 type PropsType = {
+    id: string
     title: string
+    filter: FilterValuesType
     tasks: Array<TaskType>
-    removeTask: (taskID: string) => void
-    changeFilter: (filter: FilterValuesType) => void
-    addTask: (title: string) => void
-    changeTaskStatus: (taskID: string, isDone: boolean) => void
+    removeTask: (taskID: string, todoListID: string) => void
+    changeFilter: (filter: FilterValuesType, todoListID: string) => void
+    addTask: (title: string, todoListID: string) => void
+    changeTaskStatus: (taskID: string, isDone: boolean, todoListID: string) => void
 
 }
 
@@ -19,7 +21,7 @@ function TodoList(props: PropsType) {
     function addTask(title: string) {
         const trimmedTitle = title.trim()
         if (trimmedTitle) {
-            props.addTask(trimmedTitle);
+            props.addTask(trimmedTitle, props.id);
             setTitle("");
         } else {
             setError(true)
@@ -28,8 +30,8 @@ function TodoList(props: PropsType) {
     }
 
     const tasksJSX = props.tasks.map(task => {   //рендеринг списков с помощью методов map
-        const changeStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(task.id, e.currentTarget.checked)
-        const removeTask = () => props.removeTask(task.id)
+        const changeStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(task.id, e.currentTarget.checked, props.id)
+        const removeTask = () => props.removeTask(task.id, props.id)
         return (
             <li key={task.id}>
                 <input type="checkbox"
@@ -37,7 +39,7 @@ function TodoList(props: PropsType) {
                        onChange={changeStatus}
                 />
                 <span>{task.title}</span>
-                <button onClick={() => props.removeTask(task.id)}>x</button>
+                <button onClick={() => props.removeTask(task.id, props.id)}>x</button>
             </li>
         ) // Клик по кнопке onClick, если мы нажали - функция выполняется
     })
