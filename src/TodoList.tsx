@@ -28,12 +28,14 @@ function TodoList(props: PropsType) {
         props.changeTodoListTitle(newTitle, props.id)
     }
 
+    const setAllFilterValue = () => props.changeFilter("all", props.id)
+    const setActiveFilterValue = () => props.changeFilter("active", props.id)
+    const setCompletedFilterValue = () => props.changeFilter("completed", props.id)
+    const getBtnClass = (filter: FilterValuesType) => props.filter=== filter ? "active" : "" ;
+
     const tasksJSX = props.tasks.map(task => {   //рендеринг списков с помощью методов map
         const changeStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(task.id, e.currentTarget.checked, props.id)
-        const changeTaskTitle = (newTitle:string) => {
-          props.changeTaskTitle(task.id, newTitle, props.id)
-        }
-
+        const changeTaskTitle = (newTitle:string) => {props.changeTaskTitle(task.id, newTitle, props.id)}
 
         const removeTask = () => props.removeTask(task.id, props.id)
         return (
@@ -60,9 +62,15 @@ function TodoList(props: PropsType) {
                 {tasksJSX}
             </ul>
             <div>
-                <button onClick={() => props.changeFilter("all")}>All</button>
-                <button onClick={() => props.changeFilter("active")}>Active</button>
-                <button onClick={() => props.changeFilter("completed")}>Completed</button>
+                <button
+                    className={getBtnClass("all")}
+                    onClick={setAllFilterValue}>All</button>
+                <button
+                    className={getBtnClass("active")}
+                    onClick={setActiveFilterValue}>Active</button>
+                <button
+                    className={getBtnClass("completed")}
+                    onClick={setCompletedFilterValue}>Completed</button>
             </div>
         </div>
 
